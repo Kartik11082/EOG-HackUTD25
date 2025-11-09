@@ -1,7 +1,8 @@
 import './App.css'
 import PotionNetworkMap from '../components/Output2/CauldronWatch'
 import CauldronWatch from '../components/Output1/PotionNetworkMap'
-import DiscrepancyDashBoard from '../components/Output3/DiscrepancyDashBoard'
+import DiscrepanciesViewer from '../components/Output3/DiscrepanciesViewer'
+
 
 function App() {
 
@@ -9,7 +10,7 @@ function App() {
     <>
       <CauldronWatch />
       <PotionNetworkMap />
-      <DiscrepancyDashBoard />
+      <DiscrepanciesViewer />
     </>
   )
 }

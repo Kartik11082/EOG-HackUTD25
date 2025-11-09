@@ -579,10 +579,10 @@ function PotionNetworkMap() {
                     </div>
                 </div>
                 <style>{`
-          @keyframes loading {
+            @keyframes loading {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(300%); }
-          }
+            }
         `}</style>
             </div>
         );
@@ -603,7 +603,7 @@ function PotionNetworkMap() {
                 <h1>🧪 Potion Network</h1>
                 <p>📅 {timestamp} • 🔄 Auto-refresh: Every 60s</p>
             </div>
-            <MapContainer center={[avgLat, avgLon]} zoom={13} style={{ flex: 1, width: '100%' }}>
+            <MapContainer center={[avgLat, avgLon]} zoom={17} style={{ flex: 1, width: '100%' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap contributors' />
                 {edges.map((edge, idx) => {
                     const fromPos = nodePos[edge.from];
