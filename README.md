@@ -119,7 +119,7 @@ Analyze discrepancies over a date range.
 
 ```bash
 git clone https://github.com/Kartik11082/EOG-HackUTD25.git
-cd potion-discrepancy-detector
+cd EOG-HackUTD25
 ```
 
 ### 2. Set Up Backend
@@ -137,7 +137,7 @@ Flask will run at **[http://127.0.0.1:5003](http://127.0.0.1:5003)**
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev
 ```
 
 React will start at **[http://localhost:5173](http://localhost:5173)** and fetch data from Flask.
