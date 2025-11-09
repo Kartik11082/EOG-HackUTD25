@@ -1,0 +1,90 @@
+.cauldron-container {
+    background-color: #0b0c10;
+    color: white;
+    min-height: 100vh;
+    padding: 24px;
+    font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+.cauldron-header {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.control-group label {
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+}
+
+select,
+input[type="checkbox"] {
+    background-color: #1f2937;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.stats-card {
+    background-color: #1f2937;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.ticket-section {
+    margin-top: 32px;
+}
+
+.ticket-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+}
+
+.ticket-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1f2937;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.ticket-table th,
+.ticket-table td {
+    padding: 12px;
+    text-align: left;
+}
+
+.ticket-table tr {
+    border-top: 1px solid #374151;
+}
+
+.ticket-empty {
+    color: #9ca3af;
+    margin-top: 8px;
+}
