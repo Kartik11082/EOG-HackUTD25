@@ -1,161 +1,179 @@
-# EOG Discrepancy Detection System
+# 🧙 Potion Discrepancy Detection System - EOG Sponsor Challenge
 
-## 🏗️ System Architecture
+**HackUTD 2025 | Presented by PNC**
 
-The system uses a two-phase approach for efficient discrepancy detection:
+A real-time system that detects inconsistencies between potion drain data from cauldrons and potion transport tickets reported by witches — using statistical analysis, Flask APIs, and a React dashboard.
 
-### Phase 1: One-time Drain Analysis
+---
 
-- Analyzes time-series data to detect drain events
-- Calculates fill rates for each cauldron
-- Computes expected volumes considering fill-during-drain
-- Only runs once at startup
+## 🚀 Overview
 
-### Phase 2: Dynamic Ticket Processing
+This project identifies discrepancies between **measured potion drains** (from the `/Data` API) and **reported ticket collections** (from the `/Tickets` API).
+It uses adaptive anomaly detection to flag suspicious differences — like missing tickets or phantom drains — and provides a live dashboard to visualize them clearly.
 
-- Matches tickets to known drain events
-- Identifies discrepancies (over/under reporting)
-- Detects phantom tickets and missing documentation
-- Runs quickly whenever tickets change
+---
 
-## 🚀 Setup Instructions
+## 🧩 Features
 
-### Backend Setup
+- **Real-time data processing** from API sources
+- **Drain event detection** using statistical thresholding
+- **Discrepancy classification** with detailed categories:
 
-```bash
-cd eogBackend
+  - `MISMATCH`: Volumes match within a set tolerance
+  - `MATCH`: Ticket volume > drain volume
+  - `DRAIN_NOT_DETECTED`: Ticket volume < drain volume
+  - `TICKET_MISSING`: Drain detected but no ticket reported
 
-# Create and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# OR
-.venv\Scripts\Activate.ps1  # Windows PowerShell
+- **Flask API** to serve comparison results
+- **React dashboard** for visual exploration of discrepancies
+- **Configurable parameters**: `tolerance`, `std_multiplier`, `min_duration`
 
-# Install dependencies
-pip install -r requirements.txt
+---
 
-# Start the Flask server
-python apis/discrepancyDetector.py
-```
+## 🧠 How We Built It
 
-### Frontend Setup
+1. **Data Collection**
 
-```bash
-cd eogFrontend
+   - Fetched potion level data (`/Data`) and ticket logs (`/Tickets`) over a date range.
+   - Grouped data by `cauldron_id` and `date` for direct comparison.
 
-# Install dependencies
-npm install
+2. **Drain Detection**
 
-# Start development server
-npm run dev
-```
+   - Calculated changes in potion levels across time.
+   - Applied a **statistical drain detection algorithm** using standard deviation (`std_multiplier`) to flag sudden drops that indicate potion drains.
 
-## 📊 API Endpoints
+3. **Discrepancy Detection**
 
-### GET /health
+   - Compared ticket totals to detected drain volumes using a configurable **tolerance** threshold.
+   - Classified each cauldron/date entry into one of the four categories listed above.
 
-Health check endpoint.
+4. **Visualization**
 
-### POST /detect_daily_discrepancy
+   - Flask API (`/compare`) returns clean JSON results.
+   - React component (`DiscrepancyVisualizer.jsx`) displays:
 
-Legacy endpoint for single-cauldron analysis.
+     - Summary statistics
+     - Color-coded discrepancy table
+     - Live analysis results
 
-Request body:
+---
 
-```json
-{
-  "cauldron_data": {
-    "cauldron_id": "cauldron_001",
-    "date_time": "2025-11-01",
-    "drain_volume": 100
-  },
-  "tolerance": 0.05
-}
-```
+## 🧪 Tech Stack
 
-### POST /analyze_discrepancies
+| Layer             | Tools / Frameworks                                         |
+| ----------------- | ---------------------------------------------------------- |
+| **Frontend**      | React, Fetch API, Inline CSS                               |
+| **Backend**       | Flask, Pandas, Requests, JSON                              |
+| **Visualization** | Custom summary cards + color-coded table                   |
+| **Deployment**    | Local Flask Server (port 5003), Proxy via React dev server |
 
-New endpoint for bulk analysis across all cauldrons.
+---
 
-Request body:
+## ⚙️ API Endpoints
+
+### **POST `/compare`**
+
+Analyze discrepancies over a date range.
+
+#### Request
 
 ```json
 {
-  "tolerance": 0.05
+  "dates_to_analyze": ["2025-10-30", "2025-11-08"],
+  "std_multiplier": 3.0,
+  "min_duration": 5,
+  "tolerance": 5.0
 }
 ```
 
-Response format:
+#### Response
 
 ```json
 {
   "summary": {
-    "total_tickets": 149,
-    "total_drains": 142,
-    "total_discrepancies": 23,
-    "suspicious_tickets": 12,
-    "missing_tickets": 5,
-    "ok_matches": 119
+    "total_comparisons": 120,
+    "matches": 58,
+    "mismatches": 22,
+    "missing_tickets": 30,
+    "missing_drains": 10
   },
-  "discrepancies": [
+  "results": [
     {
-      "type": "over_reported",
-      "severity": "critical",
-      "cauldron_id": "cauldron_008",
-      "date": "2025-10-31",
-      "ticket_id": "TT_20251031_019",
-      "ticket_volume": 95.35,
-      "expected_volume": 72.76,
-      "difference": 22.59,
-      "message": "Over-reported by 22.59 units"
+      "cauldron_id": "cauldron_001",
+      "date": "2025-11-01",
+      "ticket_amount": 95.8,
+      "drain_volume": 0.0,
+      "difference": 95.8,
+      "category": "DRAIN_NOT_DETECTED",
+      "color": "purple"
     }
-  ],
-  "by_cauldron": {
-    "cauldron_008": [
-      /* discrepancies */
-    ]
-  },
-  "by_date": {
-    "2025-10-31": [
-      /* discrepancies */
-    ]
-  }
+  ]
 }
 ```
 
-## 🔧 Configuration
+---
 
-### Backend
+## 💻 Running Locally
 
-- `TICKETS_API`: URL for the tickets API
-- `DATA_API`: URL for time-series data API
-- `CAULDRONS_API`: URL for cauldron metadata API
+### 1. Clone the Repository
 
-### Frontend
+```bash
+git clone https://github.com/Kartik11082/EOG-HackUTD25.git
+cd potion-discrepancy-detector
+```
 
-- Uses Vite proxy to forward `/api/*` requests to the backend
-- Configure proxy target in `vite.config.js`
+### 2. Set Up Backend
 
-## 🎯 Key Features
+```bash
+cd backend
+pip install -r requirements.txt
+python app.py
+```
 
-1. **Smart Volume Calculation**
+Flask will run at **[http://127.0.0.1:5003](http://127.0.0.1:5003)**
 
-   - Accounts for potion generation during drain
-   - Expected volume = visible_drop + (fill_rate × duration)
+### 3. Set Up Frontend
 
-2. **Robust Matching**
+```bash
+cd frontend
+npm install
+npm start
+```
 
-   - Matches tickets to drains using scoring algorithm
-   - Considers volume similarity, dates, and capacity limits
+React will start at **[http://localhost:5173](http://localhost:5173)** and fetch data from Flask.
 
-3. **Comprehensive Classification**
+---
 
-   - Over/under reporting detection
-   - Phantom ticket identification
-   - Missing documentation alerts
-   - Severity assessment (critical, high, medium, low)
+## 🧮 Configuration
 
-4. **Real-time Updates**
-   - Pre-computes stable drain data
-   - Fast re-matching when tickets change
-   - Optimized for judging environment
+| Parameter        | Description                             | Default |
+| ---------------- | --------------------------------------- | ------- |
+| `std_multiplier` | Sensitivity of drain detection          | `3.0`   |
+| `min_duration`   | Minimum minutes for a valid drain       | `5`     |
+| `tolerance`      | Acceptable difference in potion volumes | `5.0`   |
+
+---
+
+## 📊 Example Output
+
+| Cauldron ID  | Date       | Ticket Amount | Drain Volume | Difference | Category           |
+| ------------ | ---------- | ------------- | ------------ | ---------- | ------------------ |
+| cauldron_001 | 2025-11-01 | 95.8          | 0.0          | 95.8       | DRAIN_NOT_DETECTED |
+| cauldron_002 | 2025-11-03 | 50.0          | 47.5         | 2.5        | MISMATCH           |
+| cauldron_003 | 2025-11-04 | 0.0           | 82.3         | 82.3       | TICKET_MISSING     |
+
+---
+
+## 🪄 Future Enhancements
+
+- Add live alerts for large discrepancies
+- Deploy via AWS Lambda or EC2
+- Integrate heatmaps and historical trends
+- Train an ML model to predict ticket inconsistencies
+
+---
+
+## 👥 Team
+
+**PotionWatch – HackUTD 2025 Team**
+Built with 🧠 + ☕ + 💻 during 24 hours of organized chaos.
